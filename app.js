@@ -16,6 +16,17 @@ const config = {
   }
 }
 
+// create a new dictionary
+app.post('/api/dictionary', async (req, res) => {
+  const dictionary = await axios.post(baseURl,
+    req.body,
+    config
+  ).catch((err) => {
+    return res.status(err.response.status).json(err.response.data)
+  })
+  return res.status(dictionary.status).json(dictionary.data);
+});
+
 // get value for passed in key
 app.get('/api/dictionary/:id/key', async (req, res) => {
   const dictionary = await axios
@@ -27,21 +38,25 @@ app.get('/api/dictionary/:id/key', async (req, res) => {
   return res.status(dictionary.status).json(dictionary.data);
 });
 
-// create a new dictionary
-app.post('/api/dictionary', async (req, res) => {
-  const dictionary = await axios.post(baseURl,
-    req.body,
-    config
-  )
-  return res.status(dictionary.status).json(dictionary.data);
-});
-
 // create/update an entry in the dictionary
 app.post('/api/dictionary/:id', async (req, res) => {
   const dictionary = await axios.post(`${baseURl}/${req.params.id}/keys/${req.query.key}`,
     req.body,
     config
-  )
+  ).catch((err) => {
+    return res.status(err.response.status).json(err.response.data)
+  })
+  return res.status(dictionary.status).json(dictionary.data);
+});
+
+// delete a key/value pair
+app.delete('/api/dictionary/:id/key', async (req, res) => {
+  const dictionary = await axios
+    .delete(`${baseURl}/${req.params.id}/keys/${req.query.key}`,
+      config
+    ).catch((err) => {
+      return res.status(err.response.status).json(err.response.data)
+    })
   return res.status(dictionary.status).json(dictionary.data);
 });
 
@@ -49,7 +64,9 @@ app.post('/api/dictionary/:id', async (req, res) => {
 app.delete('/api/dictionary/:id', async (req, res) => {
   const dictionary = await axios.delete(`${baseURl}/${req.params.id}`,
     config
-  )
+  ).catch((err) => {
+    return res.status(err.response.status).json(err.response.data)
+  })
   return res.status(dictionary.status).json(dictionary.data);
 });
 
